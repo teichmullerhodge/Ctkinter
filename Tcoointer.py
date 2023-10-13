@@ -1,5 +1,3 @@
-#gui that reads the user input and gives data about a given currency
-
 import requests
 import json
 import customtkinter
@@ -16,18 +14,18 @@ from PIL import Image
 
 
 bar_list = []
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # USA USA USA 
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # Defina a localização para os EUA
 
 
 def set_progress_color_value(value, progressbar):
 
     max_value = 0
-    min_value = float('inf') # I was using sys.maxsize, yeah i'm drunk.
+    min_value = float('inf') #sys.maxsize, yeah i'm drunk.
     for values in bar_list:
 
         if values > max_value:
             max_value = values
-        if values < min_value: #i'm sure they are
+        if values < min_value: #i'm sure as hell they are
             min_value = values
 
 
@@ -38,7 +36,7 @@ def set_progress_color_value(value, progressbar):
         progressbar.configure(progress_color='red')
         progressbar.set(0.33)
     else:
-        progressbar.configure(progress_color='#ff6c00')
+        progressbar.configure(progress_color='#4895EF')
         progressbar.set(0.66)
 
 
@@ -56,11 +54,11 @@ def get_price(coin):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        div_element = soup.find('div', class_='YMlKec fxKbKc') #THE CLASS THAT GIVES THE PRICEEEEEEEEEEE
-        #print(soup) off course you don't want to print this.
+        div_element = soup.find('div', class_='YMlKec fxKbKc')
+        print(soup)
 
 
-        if div_element: 
+        if div_element: #first run
             
             value = div_element.text
             cprice_label.configure(text=f'${value}')
@@ -82,7 +80,7 @@ def get_crypto_info(coinsymbols): #This function returns data about market cap a
     headers = {
 
     'Accepts' : 'application/json',
-    'X-CMC_PRO_API_KEY' : 'NOT GIVING YOU THIS'
+    'X-CMC_PRO_API_KEY' : 'YOUR API KEY'
 }
 
     response = requests.get(url, params=parameters, headers=headers)
@@ -148,6 +146,7 @@ def get_crypto_info(coinsymbols): #This function returns data about market cap a
             else:
                 month_percentage.configure(text=f'-{sym_percent_change_30d:.2f}', text_color='red')
 
+            print(f"Current value: {formatted_price}, week value: {formatted_price_week}, month value: {formatted_price_month}")
 
 
     
@@ -158,8 +157,8 @@ def get_crypto_info(coinsymbols): #This function returns data about market cap a
 #window configuration
 
 app = customtkinter.CTk()
-app.title("Tkoointer")
-app.geometry('450x600')
+app.title("CoinKinter App")
+app.geometry('700x600')
 app.configure(fg_color='#ffffff')
 
 #Images used in the buttons
@@ -232,7 +231,7 @@ currency_entry = customtkinter.CTkEntry(app)
 currency_entry.grid(row=2, column=0, padx=10, sticky='n')
 
 
-request_button = customtkinter.CTkButton(app, text='Get coin data', fg_color='#ff6c00', command=lambda: get_crypto_info(currency_entry.get()))
+request_button = customtkinter.CTkButton(app, text='Get coin data', fg_color='#4895EF', command=lambda: get_crypto_info(currency_entry.get()))
 request_button.grid(row=2, column=0, padx=10, sticky='n', pady=35)
 
 
@@ -246,7 +245,7 @@ refresh_button.grid(row=2, column=0, padx=10, sticky='n', pady=70)
 cvalue_progressbar = customtkinter.CTkProgressBar(app, progress_color='#ff6c00', orientation='vertical', width=20, fg_color='#ffffff')
 cvalue_progressbar.grid(row=2, column=1, padx=10)
 
-clabel = customtkinter.CTkLabel(app, text='current')
+clabel = customtkinter.CTkLabel(app, text='Today')
 clabel.grid(row=3, column=1, padx=10)
 
 week_value_progressbar = customtkinter.CTkProgressBar(app, progress_color='#ff6c00', orientation='vertical', width=20, fg_color='#ffffff')
@@ -260,11 +259,9 @@ month_value_progressbar.grid(row=2, column=3)
 
 
 monthlabel = customtkinter.CTkLabel(app, text='30d')
-monthlabel.grid(row=3, column=3, sticky='e')
+monthlabel.grid(row=3, column=3)
 
-get_crypto_info('BTC') #DEFAULT CRYPTO
+get_crypto_info('BTC')
 
-#I HOPE YOU HAVE THE IMAGE FILES, CAUSE IF YOU DON'T THEM JUST ERASE THE LINES.
-#I'M GOING TO ADD AN app.after() line to read data from time to time 
 
 app.mainloop()
