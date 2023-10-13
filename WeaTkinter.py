@@ -1,6 +1,7 @@
 import requests
 import OpenWeather
 import customtkinter
+import random
 
 from PIL import Image
 from CTkColorPicker import *
@@ -9,7 +10,7 @@ from CTkColorPicker import *
 def get_curr_weather(q):
 
 
-    api_key = OpenWeather.api_key #Your file with your api Key
+    api_key = OpenWeather.api_key
    
 
     url = f'http://api.weatherapi.com/v1/current.json?key={api_key}&q={q}&aqi=no'
@@ -63,13 +64,14 @@ def get_curr_weather(q):
         else:
             customtkinter.set_appearance_mode("light")
 
-
-        if 'rain' in current_condition:
+        if any(keyword in current_condition.lower() for keyword in ['rain', 'storm', 'hail', 'shower']):
             condition_button.configure(image=RAIN_IMAGE)
-        if 'clear' in current_condition:
+        if any(keyword in current_condition.lower() for keyword in ['sunny', 'clear']):
             condition_button.configure(image=CLEAR_IMAGE)
-        if 'snow' in current_condition:
+        if 'snow' in current_condition.lower():
             condition_button.configure(image=SNOW_IMAGE)
+        else:
+            condition_button.configure(image=CLEAR_IMAGE)
 
         temp_value = int(temperature_c)
 
@@ -147,7 +149,7 @@ theme_button = customtkinter.CTkButton(app, text="", width=2, image=THEME_IMAGE,
 theme_button.grid(row=2,column=2, padx=20)
 
 
-get_curr_weather("Londrina") #londrina as default
+get_curr_weather(random.choice(OpenWeather.CITIES)) 
 
 
 app.mainloop()
